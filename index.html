@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosa Encantada con Animación de Tallo y Florecimiento</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(to bottom, #111, #222);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .scene {
+            position: relative;
+            width: 300px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .table {
+            width: 250px;
+            height: 20px;
+            background: #5d4037;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .dome {
+            position: absolute;
+            bottom: 20px;
+            width: 200px;
+            height: 300px;
+            background: rgba(220, 220, 255, 0.2);
+            border-radius: 100px 100px 10px 10px;
+            z-index: 3;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(1px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dome::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: rgba(220, 220, 255, 0.4);
+            border-radius: 50%;
+        }
+
+        .rose-container {
+            position: absolute;
+            bottom: 20px;
+            height: 250px;
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .stem {
+            position: relative;
+            height: 180px;
+            width: 5px;
+            background: linear-gradient(to bottom, #388E3C, #1B5E20);
+            z-index: 1;
+            transform-origin: bottom center;
+            transform: scaleY(0);
+            animation: stemGrow 3s ease-out forwards;
+        }
+
+        @keyframes stemGrow {
+            0% {
+                transform: scaleY(0);
+            }
+            100% {
+                transform: scaleY(1);
+            }
+        }
+
+        .leaf {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            background: linear-gradient(to right, #2E7D32, #388E3C);
+            border-radius: 50%;
+            opacity: 0;
+            animation: leafAppear 2s ease-out forwards;
+        }
+
+        .leaf::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 5px;
+            width: 20px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(-5deg);
+        }
+
+        .leaf:nth-child(1) {
+            top: 70px;
+            left: 5px;
+            transform: rotate(45deg) scale(0);
+            animation: leafAppear 1.5s ease-out 1.5s forwards;
+        }
+
+        .leaf:nth-child(2) {
+            top: 120px;
+            left: -20px;
+            transform: rotate(-45deg) scale(0);
+            animation: leafAppear 1.5s ease-out 2s forwards;
+        }
+
+        @keyframes leafAppear {
+            0% {
+                transform: rotate(var(--rotateLeaf, 45deg)) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: rotate(var(--rotateLeaf, 45deg)) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .rose {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            z-index: 2;
+            transform-origin: center bottom;
+            transform: scale(0);
+            animation: roseGrow 3s ease-out 3s forwards;
+            /* Ajuste principal: bajamos la posición de la rosa para conectarla con el tallo */
+            top: -5px;
+            /* Centramos un poco mejor horizontalmente */
+            left: -2px;
+        }
+
+        @keyframes roseGrow {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .rose-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle at center, #FFF59D, #FFEB3B);
+            border-radius: 50%;
+            top: 25px;
+            left: 25px;
+            z-index: 15;
+            transform-origin: center;
+            animation: centerGrow 2s ease-out 5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes centerGrow {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(0.5);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .rose-petal {
+            position: absolute;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+            transform-origin: bottom center;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        /* Inner petals - Layer 1 */
+        .rose-petal:nth-child(1) {
+            width: 26px;
+            height: 36px;
+            top: 10px;
+            left: 22px;
+            background: linear-gradient(to bottom right, #FFD700, #FFC107);
+            z-index: 10;
+            animation: petalBloom 2s ease-out 3.5s forwards;
+        }
+
+        .rose-petal:nth-child(2) {
+            width: 26px;
+            height: 36px;
+            top: 15px;
+            left: 8px;
+            background: linear-gradient(to bottom right, #FFEB3B, #FFC107);
+            z-index: 9;
+            animation: petalBloom 2s ease-out 3.7s forwards;
+        }
+
+        .rose-petal:nth-child(3) {
+            width: 26px;
+            height: 36px;
+            top: 15px;
+            right: 8px;
+            background: linear-gradient(to bottom left, #FFD700, #FFC107);
+            z-index: 9;
+            animation: petalBloom 2s ease-out 3.9s forwards;
+        }
+
+        /* Middle petals - Layer 2 */
+        .rose-petal:nth-child(4) {
+            width: 32px;
+            height: 42px;
+            top: 15px;
+            left: -2px;
+            background: linear-gradient(to bottom right, #FFC107, #FFB300);
+            z-index: 7;
+            animation: petalBloom 2s ease-out 4.1s forwards;
+        }
+
+        .rose-petal:nth-child(5) {
+            width: 32px;
+            height: 42px;
+            top: 15px;
+            right: -2px;
+            background: linear-gradient(to bottom left, #FFC107, #FFB300);
+            z-index: 7;
+            animation: petalBloom 2s ease-out 4.3s forwards;
+        }
+
+        .rose-petal:nth-child(6) {
+            width: 32px;
+            height: 42px;
+            top: 20px;
+            left: 19px;
+            background: linear-gradient(to bottom, #FFCA28, #FFB300);
+            z-index: 6;
+            animation: petalBloom 2s ease-out 4.5s forwards;
+        }
+
+        /* Outer petals - Layer 3 */
+        .rose-petal:nth-child(7) {
+            width: 38px;
+            height: 48px;
+            top: 8px;
+            left: 16px;
+            background: linear-gradient(to bottom, #FFD700, #FFB300);
+            z-index: 5;
+            animation: petalBloom 2s ease-out 4.7s forwards;
+        }
+
+        .rose-petal:nth-child(8) {
+            width: 38px;
+            height: 48px;
+            top: 12px;
+            left: 0px;
+            background: linear-gradient(to bottom right, #FFD700, #FFC107);
+            z-index: 4;
+            animation: petalBloom 2s ease-out 4.9s forwards;
+        }
+
+        .rose-petal:nth-child(9) {
+            width: 38px;
+            height: 48px;
+            top: 12px;
+            right: 0px;
+            background: linear-gradient(to bottom left, #FFD700, #FFC107);
+            z-index: 4;
+            animation: petalBloom 2s ease-out 5.1s forwards;
+        }
+
+        /* Additional outer petals - Layer 4 */
+        .rose-petal:nth-child(10) {
+            width: 42px;
+            height: 52px;
+            top: 3px;
+            left: 14px;
+            background: linear-gradient(to bottom, #FFC107, #FF9800);
+            z-index: 3;
+            animation: petalBloom 2s ease-out 5.3s forwards;
+        }
+
+        .rose-petal:nth-child(11) {
+            width: 42px;
+            height: 52px;
+            top: 8px;
+            left: -8px;
+            background: linear-gradient(to bottom right, #FFC107, #FF9800);
+            z-index: 2;
+            animation: petalBloom 2s ease-out 5.5s forwards;
+        }
+
+        .rose-petal:nth-child(12) {
+            width: 42px;
+            height: 52px;
+            top: 8px;
+            right: -8px;
+            background: linear-gradient(to bottom left, #FFC107, #FF9800);
+            z-index: 2;
+            animation: petalBloom 2s ease-out 5.7s forwards;
+        }
+
+        /* Final outer petals - Layer 5 */
+        .rose-petal:nth-child(13) {
+            width: 45px;
+            height: 55px;
+            top: 0px;
+            left: 12px;
+            background: linear-gradient(to bottom, #FFB300, #FF8F00);
+            z-index: 1;
+            animation: petalBloom 2s ease-out 5.9s forwards;
+        }
+
+        .rose-petal:nth-child(14) {
+            width: 45px;
+            height: 55px;
+            top: 5px;
+            left: -12px;
+            background: linear-gradient(to bottom right, #FFB300, #FF8F00);
+            z-index: 0;
+            animation: petalBloom 2s ease-out 6.1s forwards;
+        }
+
+        .rose-petal:nth-child(15) {
+            width: 45px;
+            height: 55px;
+            top: 5px;
+            right: -12px;
+            background: linear-gradient(to bottom left, #FFB300, #FF8F00);
+            z-index: 0;
+            animation: petalBloom 2s ease-out 6.3s forwards;
+        }
+
+        /* Extra petals for fullness - Layer 6 */
+        .rose-petal:nth-child(16) {
+            width: 35px;
+            height: 45px;
+            top: 25px;
+            left: 4px;
+            background: linear-gradient(135deg, #FFCA28, #FFB300);
+            z-index: 1;
+            animation: petalBloom 2s ease-out 6.5s forwards;
+        }
+
+        .rose-petal:nth-child(17) {
+            width: 35px;
+            height: 45px;
+            top: 25px;
+            right: 4px;
+            background: linear-gradient(225deg, #FFCA28, #FFB300);
+            z-index: 1;
+            animation: petalBloom 2s ease-out 6.7s forwards;
+        }
+
+        .rose-petal:nth-child(18) {
+            width: 30px;
+            height: 40px;
+            top: 30px;
+            left: 20px;
+            background: linear-gradient(to bottom, #FFC107, #FFCA28);
+            z-index: 2;
+            animation: petalBloom 2s ease-out 6.9s forwards;
+        }
+
+        @keyframes petalBloom {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1) rotate(var(--rotate, 0deg));
+                opacity: 1;
+            }
+        }
+
+        /* Petal details */
+        .rose-petal::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .rose-petal::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+        }
+
+        .falling-petal {
+            position: absolute;
+            background-color: #FFD700;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            opacity: 0.9;
+            z-index: 1;
+            animation: float 15s linear forwards;
+            overflow: hidden;
+        }
+
+        .falling-petal::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .falling-petal::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translateY(50px) translateX(20px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(100px) translateX(-20px) rotate(180deg);
+            }
+            75% {
+                transform: translateY(150px) translateX(10px) rotate(270deg);
+            }
+            100% {
+                transform: translateY(200px) translateX(0px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .glow {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.5), transparent 70%);
+            animation: glowPulse 4s 7s infinite alternate;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        @keyframes glowPulse {
+            0% { opacity: 0.3; transform: scale(0.9); }
+            100% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .title {
+            position: absolute;
+            bottom: -80px;
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-family: 'Times New Roman', serif;
+            animation: fadeIn 2s ease-in 7.5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modificación de los rayos de luz para que apunten a la flor */
+        .light-beam {
+            position: absolute;
+            width: 40px;
+            height: 250px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.01));
+            filter: blur(3px);
+            z-index: 0;
+            animation: beam 3s ease-in 7s forwards;
+            opacity: 0;
+            transform-origin: top center;
+        }
+
+        .light-beam:nth-child(1) {
+            top: -100px;
+            left: 70px;
+            transform: rotate(25deg) translateY(50px);
+        }
+
+        .light-beam:nth-child(2) {
+            top: -100px;
+            right: 70px;
+            transform: rotate(-25deg) translateY(50px);
+        }
+
+        /* Añadimos un tercer rayo de luz desde arriba */
+        .light-beam:nth-child(3) {
+            top: -70px;
+            left: 130px;
+            transform: translateY(30px);
+            width: 50px;
+        }
+
+        @keyframes beam {
+            0% { opacity: 0; }
+            100% { opacity: 0.7; }
+        }
+
+        /* New bud element for initial stage */
+        .rose-bud {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: linear-gradient(to bottom, #FFB300, #FF8F00);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 0;
+            left: 20px;
+            z-index: 16;
+            overflow: hidden;
+            animation: budOpen 2s ease-out 3.5s forwards;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        @keyframes budOpen {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+        
+        /* Añadimos una conexión visual entre el tallo y la rosa */
+        .stem-top {
+            position: absolute;
+            width: 5px;
+            height: 8px;
+            background: linear-gradient(to top, #388E3C, #4CAF50);
+            top: -8px;
+            left: 0;
+            z-index: 3;
+            transform-origin: bottom center;
+            transform: scaleY(0);
+            animation: stemGrow 3s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+        
+        <div class="rose-container">
+            <div class="rose">
+                <div class="glow"></div>
+                <div class="rose-bud"></div>
+                <!-- Inner petals - Layer 1 -->
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <!-- Middle petals - Layer 2 -->
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <!-- Outer petals - Layer 3 -->
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <!-- Additional outer petals - Layer 4 -->
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <!-- Final outer petals - Layer 5 -->
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <!-- Extra petals - Layer 6 -->
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <!-- Center -->
+                <div class="rose-center"></div>
+            </div>
+            <div class="stem">
+                <!-- Agregamos una extensión en la parte superior del tallo -->
+                <div class="stem-top"></div>
+                <div class="leaf"></div>
+                <div class="leaf"></div>
+            </div>
+        </div>
+        
+        <div class="dome"></div>
+        <div class="table"></div>
+        
+        <div class="title">Una pequeña flor amarilla para una persona que ilumina mi vida</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scene = document.querySelector('.scene');
+            const roseContainer = document.querySelector('.rose-container');
+            const rosePetals = document.querySelectorAll('.rose-petal');
+            const glow = document.querySelector('.glow');
+            const leaves = document.querySelectorAll('.leaf');
+            const maxFallingPetals = 7;
+            let petalCount = 0;
+            
+            // Set random rotation for petals
+            rosePetals.forEach((petal) => {
+                const rotation = (Math.random() * 20 - 10);
+                petal.style.setProperty('--rotate', `${rotation}deg`);
+            });
+
+            // Set rotation for leaves
+            leaves[0].style.setProperty('--rotateLeaf', '45deg');
+            leaves[1].style.setProperty('--rotateLeaf', '-45deg');
+            
+            // Start glow effect after main animation
+            setTimeout(() => {
+                glow.style.opacity = "0.5";
+            }, 6500);
+            
+            function createFallingPetal() {
+                if (petalCount >= maxFallingPetals) return;
+                
+                const petal = document.createElement('div');
+                petal.classList.add('falling-petal');
+                
+                // Random size between 15px and 25px
+                const size = Math.random() * 10 + 15;
+                petal.style.width = size + 'px';
+                petal.style.height = size * 1.33 + 'px';
+                
+                // Random gradient for more realistic petals
+                const yellowTones = [
+                    'linear-gradient(to bottom right, #FFD700, #FFC107)',
+                    'linear-gradient(to bottom right, #FFEB3B, #FFC107)',
+                    'linear-gradient(to bottom left, #FFD700, #FFC107)',
+                    'linear-gradient(to bottom, #FFCA28, #FFB300)'
+                ];
+                
+                petal.style.background = yellowTones[Math.floor(Math.random() * yellowTones.length)];
+                
+                // Position at the rose
+                petal.style.top = '10px';
+                petal.style.left = (30 - size/2) + 'px';
+                
+                // Random rotation
+                const rotation = Math.random() * 360;
+                petal.style.transform = `rotate(${rotation}deg)`;
+                
+                // Random animation duration
+                const animationDuration = Math.random() * 5 + 10;
+                petal.style.animationDuration = `${animationDuration}s`;
+                
+                // Add to container
+                roseContainer.appendChild(petal);
+                petalCount++;
+                
+                // Remove petal after animation completes
+                setTimeout(() => {
+                    petal.remove();
+                    petalCount--;
+                    // Schedule next petal
+                    setTimeout(createFallingPetal, Math.random() * 3000 + 1000);
+                }, animationDuration * 1000);
+            }
+            
+            // Schedule falling petals after main bloom animation
+            setTimeout(() => {
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        createFallingPetal();
+                    }, i * 2000);
+                }
+            }, 7500);
+            
+            // Add ambient floating particles
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.background = 'rgba(255, 255, 255, 0.3)';
+                particle.style.borderRadius = '50%';
+                particle.style.zIndex = '0';
+                
+                // Random position
+                particle.style.left = Math.random() * 300 + 'px';
+                particle.style.top = Math.random() * 500 + 'px';
+                
+                // Animation
+                const duration = Math.random() * 15 + 10;
+                particle.style.animation = `float ${duration}s linear infinite`;
+                
+                scene.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                    createParticle();
+                }, duration * 1000);
+            }
+            
+            // Create ambient particles after main animation
+            setTimeout(() => {
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(createParticle, i * 500);
+                }
+            }, 7000);
+        });
+    </script>
+</body>
+</html>
