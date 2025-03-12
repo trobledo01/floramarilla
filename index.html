@@ -494,7 +494,7 @@
 
         .title {
             position: absolute;
-            bottom: -80px;
+            bottom: -120px; /* Cambiado de -80px a -120px para dar más espacio */
             text-align: center;
             color: white;
             font-size: 1.5rem;
@@ -502,6 +502,8 @@
             font-family: 'Times New Roman', serif;
             animation: fadeIn 2s ease-in 7.5s forwards;
             opacity: 0;
+            padding-top: 20px; /* Añadido padding adicional */
+            width: 100%; /* Asegurar que ocupe todo el ancho disponible */
         }
 
         @keyframes fadeIn {
@@ -590,6 +592,11 @@
             transform-origin: bottom center;
             transform: scaleY(0);
             animation: stemGrow 3s ease-out forwards;
+        }
+        
+        /* Aumentamos la altura de la escena para acomodar el texto adicional */
+        .scene {
+            height: 550px; /* Aumentado de 500px a 550px */
         }
     </style>
 </head>
